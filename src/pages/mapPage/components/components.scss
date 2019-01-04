@@ -1,0 +1,61 @@
+.full-screen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 3;
+}
+
+.post-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-new-container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba($color: #000000, $alpha: 0.4);
+}
+
+.create-new-blank-view {
+  display: block;
+  flex: 1;
+}
+
+.text-input {
+}
+
+.content-container {
+  background-color: white;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+}
+
+.user-info-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.username {
+  color: grey;
+}
+
+.content {
+  margin-top: 10px;
+}
+
+.control-button{
+  width: 150px;
+  height:60px;
+  color:white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background-color: #4db6ac
+}
