@@ -104,9 +104,9 @@ class Index extends Component {
     }
   };
   componentDidMount() {}
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   console.log(this.props, nextProps);
+  // }
 
   componentWillUnmount() {}
 
@@ -159,31 +159,10 @@ class Index extends Component {
     });
   };
 
-  // _onPressAdd = () => {
-  //   const { scale } = this.props.state;
-  //   this.props.logic('MAP_PAGE_SET_STATE', {
-  //     scale: scale + 0.5,
-  //   });
-  // };
-
-  // _onPressMinus = () => {
-  //   const { scale } = this.props.state;
-  //   this.props.logic('MAP_PAGE_SET_STATE', {
-  //     scale: scale - 0.5,
-  //   });
-  // };
-
   _onPressCreateNew = () => {
     Taro.navigateTo({
       url: '../createNew/createNew',
     });
-    // const { showCreateNew } = this.props.state;
-    // if (showCreateNew) {
-    //   return;
-    // }
-    // this.props.logic('MAP_PAGE_SET_STATE', {
-    //   showCreateNew: true,
-    // });
   };
   _onPressCloseCreateNew = () => {
     this.props.logic('MAP_PAGE_SET_STATE', {

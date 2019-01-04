@@ -1,17 +1,16 @@
-import Taro, { Component, Config } from '@tarojs/taro'
-import '@tarojs/async-await'
-import { Provider } from '@tarojs/redux'
+import Taro, { Component, Config } from '@tarojs/taro';
+import '@tarojs/async-await';
+import { Provider } from '@tarojs/redux';
 
-import Index from './pages/index'
+import Index from './pages/index';
 
-import configStore from './configStore'
+import configStore from './configStore';
 
-import './app.scss'
+import './app.scss';
 
-const store = configStore()
+const store = configStore();
 
 class App extends Component {
-
   /**
    * 指定config的类型声明为: Taro.Config
    *
@@ -23,31 +22,36 @@ class App extends Component {
     pages: [
       'pages/index/index',
       'pages/mapPage/mapPage',
-      'pages/createNew/createNew'
+      'pages/createNew/createNew',
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
-    }
-  }
+      navigationBarTextStyle: 'black',
+    },
+    permission: {
+      'scope.userLocation': {
+        desc: '本小程序需要你的位置来获取周边地区的消息',
+      },
+    },
+  };
 
-  componentDidMount () {}
+  componentDidMount() {}
 
-  componentDidShow () {}
+  componentDidShow() {}
 
-  componentDidHide () {}
+  componentDidHide() {}
 
-  componentCatchError () {}
+  componentCatchError() {}
 
-  render () {
+  render() {
     return (
       <Provider store={store}>
         <Index />
       </Provider>
-    )
+    );
   }
 }
 
-Taro.render(<App />, document.getElementById('app'))
+Taro.render(<App />, document.getElementById('app'));

@@ -1,9 +1,17 @@
 import { ofType } from 'redux-observable';
-import { Observable } from 'rxjs';
-import { mergeMap, takeLast } from 'rxjs/operators';
+import { Observable, from, of } from 'rxjs';
+import {
+  mergeMap,
+  switchMap,
+  map,
+  retryWhen,
+  concatMap,
+  retry,
+  catchError,
+} from 'rxjs/operators';
 import '@tarojs/async-await';
 import Taro from '@tarojs/taro';
-const baseUrl = 'https://www.timvel.com/wx';
+const baseUrl = 'https://timvel.com/wx';
 const sendPost = (action$, state$, { logic }) =>
   action$.pipe(
     ofType('MAP_PAGE_CREATE_POST'),
@@ -67,41 +75,70 @@ const sendPost = (action$, state$, { logic }) =>
 const fetchPosts = (action$, state$, { logic }) =>
   action$.pipe(
     ofType('MAP_PAGE_FETCH_POSTS'),
-    mergeMap((action: any) =>
-      Observable.create(async observer => {
-        try {
-          const {} = state$.value.mapPage;
-          Taro.showLoading({
-            title: 'Fetching data.....',
+    switchMap(({ payload }) => {
+      const { latitude, longitude, range, offset } = payload;
+      return from(
+        Taro.request({
+          url: baseUrl + '/fetch_posts',
+          data: {
+            latitude,
+            longitude,
+            offset: offset || 0,
+          },
+          method: 'GET',
+        }),
+      ).pipe(
+        map(({ data }) => {
+          Taro.hideLoading();
+          return logic('MAP_PAGE_SET_STATE', {
+            posts: data,
           });
-          const { latitude, longitude, range, offset } = action.payload;
-          const { data } = await Taro.request({
-            url: baseUrl + '/fetch_posts',
-            data: {
-              latitude,
-              longitude,
-              offset: offset || 0,
-            },
-            method: 'GET',
-          });
-          console.log(data);
-          observer.next(
-            logic('MAP_PAGE_SET_STATE', {
-              posts: data,
-            }),
-          );
-        } catch (error) {
-          console.log(error);
+        }),
+        retry(3),
+        catchError(() => {
           Taro.hideLoading();
           Taro.showToast({
             title: '请求失败..',
             icon: 'none',
           });
-        } finally {
-          Taro.hideLoading();
-          observer.complete();
-        }
-      }),
-    ),
+          return of(logic(null));
+        }),
+      );
+    }),
+    // mergeMap((action: any) =>
+    //   Observable.create(async observer => {
+    //     try {
+    //       Taro.showLoading({
+    //         title: 'Fetching data.....',
+    //       });
+    //       const { latitude, longitude, range, offset } = action.payload;
+    //       const { data } = await Taro.request({
+    //         url: baseUrl + '/fetch_posts',
+    //         data: {
+    //           latitude,
+    //           longitude,
+    //           offset: offset || 0,
+    //         },
+    //         method: 'GET',
+    //       });
+    //       console.log(data);
+    //       observer.next(
+    //         logic('MAP_PAGE_SET_STATE', {
+    //           posts: data,
+    //         }),
+    //       );
+    //     } catch (error) {
+    //       console.log(error);
+    //       Taro.hideLoading();
+    //       Taro.showToast({
+    //         title: '请求失败..',
+    //         icon: 'none',
+    //       });
+    //     } finally {
+    //       Taro.hideLoading();
+    //       observer.complete();
+    //     }
+    //   }),
+    // ),
   );
 export default [sendPost, fetchPosts];
